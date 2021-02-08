@@ -1,6 +1,9 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import LoginPage from './components/login/LoginPage';
+import Navbar from './components/navbar/Navbar';
 import AuthContextProvider from './contexts/AuthContext';
+import './App.css';
+import RegisterPage from './components/register/RegisterPage';
 
 function App() {
   return (
@@ -8,6 +11,16 @@ function App() {
       <Router>
         <AuthContextProvider>
           <Navbar />
+          <div id='main-content'>
+            <Switch>
+              <Route path='/login'>
+                <LoginPage />
+              </Route>
+              <Route path='/register'>
+                <RegisterPage />
+              </Route>
+            </Switch>
+          </div>
         </AuthContextProvider>
       </Router>
     </div>

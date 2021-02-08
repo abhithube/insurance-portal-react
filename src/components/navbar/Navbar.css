@@ -1,0 +1,25 @@
+nav {
+  background-color: var(--color-primary);
+}
+
+.navbar-brand {
+  margin-left: 20px;
+  margin-right: 30px;
+  color: white;
+}
+
+#logo {
+  margin-right: 10px;
+}
+
+.nav-link {
+  color: white;
+}
+
+.ms-auto {
+  margin-right: 1rem;
+}
+
+.btn {
+  border: 0px;
+}

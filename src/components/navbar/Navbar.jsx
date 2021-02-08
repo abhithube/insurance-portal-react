@@ -1,19 +1,27 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../contexts/AuthContext';
-import '../styles/Navbar.css';
+import { Link, useHistory } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
+import './Navbar.css';
 
 const Navbar = () => {
-  const { isLoggedIn, logout } = useContext(AuthContext);
+  const { loggedIn, logout } = useContext(AuthContext);
+
+  const history = useHistory();
+
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) history.push('/login?logout');
+  };
 
   return (
     <div id='navbar'>
-      <nav className='navbar navbar-expand-lg navbar-dark bg-primary'>
+      <nav className='navbar navbar-expand-lg'>
         <Link className='navbar-brand' to='/'>
-          AT Insurance
+          <i id='logo' className='fas fa-users'></i>
+          <span>AT Insurance</span>
         </Link>
         <ul className='navbar-nav'>
-          {isLoggedIn() && (
+          {loggedIn && (
             <li className='nav-item'>
               <Link className='nav-link' to='/dashboard'>
                 Dashboard
@@ -26,15 +34,15 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        {isLoggedIn() ? (
+        {loggedIn ? (
           <ul className='navbar-nav ms-auto'>
             <li className='nav-item'>
               <Link className='nav-link' to='/profile'>
-                My Profile
+                Profile
               </Link>
             </li>
             <li className='nav-item'>
-              <button className='nav-link btn' onClick={logout}>
+              <button className='nav-link btn' onClick={handleLogout}>
                 Logout
               </button>
             </li>

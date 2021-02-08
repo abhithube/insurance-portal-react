@@ -1,51 +1,70 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = (props) => {
-  const baseUrl = 'http://localhost:8000/member-details-service/members/';
-  const [user, setUser] = useState(null);
+  const baseUrl =
+    'https://app.at-insurance.com/member-details-service/members/';
+
+  const [username, setUsername] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    updateAuthentication();
+  }, []);
+
+  const updateAuthentication = async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      setUsername(user.username);
+      setLoggedIn(true);
+    } catch (err) {
+      setUsername(null);
+      setLoggedIn(false);
+      return null;
+    }
+  };
 
   const register = async (username, email, password) => {
     try {
-      await Auth.signUp(username, password, { email });
+      await Auth.signUp({ username, password, attributes: { email } });
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email }),
       };
-      fetch(baseUrl, requestOptions);
+      const res = await fetch(baseUrl, requestOptions);
+      return res.ok;
     } catch (err) {
-      throw err;
+      return false;
     }
   };
 
   const login = async (username, password) => {
     try {
       await Auth.signIn(username, password);
-      const user = await Auth.currentAuthenticatedUser();
-      setUser(user);
+      updateAuthentication();
+      return true;
     } catch (err) {
-      throw err;
+      return false;
     }
   };
 
   const logout = async () => {
     try {
       await Auth.signOut();
-      setUser(null);
+      updateAuthentication();
+      return true;
     } catch (err) {
-      throw err;
+      return false;
     }
   };
 
-  const isLoggedIn = async () => {
-    return (await Auth.currentAuthenticatedUser()) !== null;
-  };
-
   return (
-    <AuthContext.Provider value={{ user, register, login, logout, isLoggedIn }}>
+    <AuthContext.Provider
+      value={{ username, loggedIn, register, login, logout }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
