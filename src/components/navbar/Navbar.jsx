@@ -1,66 +1,68 @@
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
+
 import { AuthContext } from '../../contexts/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { loggedIn, logout } = useContext(AuthContext);
+  const { setCurrentUser, isAuthenticated, setIsAuthenticated } = useContext(
+    AuthContext
+  );
 
   const history = useHistory();
 
   const handleLogout = async () => {
-    const success = await logout();
-    if (success) history.push('/login?logout');
+    try {
+      await Auth.signOut();
+      setCurrentUser(null);
+      setIsAuthenticated(false);
+      history.push('/login?logout=true');
+    } catch (err) {
+      return false;
+    }
   };
 
   return (
-    <div id='navbar'>
-      <nav className='navbar navbar-expand-lg'>
-        <Link className='navbar-brand' to='/'>
-          <i id='logo' className='fas fa-users'></i>
-          <span>AT Insurance</span>
-        </Link>
-        <ul className='navbar-nav'>
-          {loggedIn && (
-            <li className='nav-item'>
-              <Link className='nav-link' to='/dashboard'>
-                Dashboard
-              </Link>
-            </li>
-          )}
-          <li className='nav-item'>
-            <Link className='nav-link' to='/plans'>
+    <div id='navbar-component'>
+      <nav id='navbar'>
+        <div id='navbar-header'>
+          <Link id='navbar-title' to='/'>
+            <i id='logo' className='fas fa-users'></i>
+            <span>AT Insurance</span>
+          </Link>
+        </div>
+        <div id='navbar-tabs'>
+          <div id='navbar-left'>
+            <Link className='navbar-link' to='/plans'>
               Plans
             </Link>
-          </li>
-        </ul>
-        {loggedIn ? (
-          <ul className='navbar-nav ms-auto'>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/profile'>
-                Profile
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <button className='nav-link btn' onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
-        ) : (
-          <ul className='navbar-nav ms-auto'>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/login'>
-                Login
-              </Link>
-            </li>
-            <li id='register-tab' className='nav-item'>
-              <Link className='nav-link' to='/register'>
-                Register
-              </Link>
-            </li>
-          </ul>
-        )}
+            <Link className='navbar-link' to='/about'>
+              About
+            </Link>
+          </div>
+          <div id='navbar-right'>
+            {isAuthenticated ? (
+              <Fragment>
+                <Link className='navbar-link' to='/profile'>
+                  Profile
+                </Link>
+                <button className='navbar-link' onClick={handleLogout}>
+                  Logout
+                </button>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Link className='navbar-link' to='/login'>
+                  Login
+                </Link>
+                <Link className='navbar-link' to='/register'>
+                  Register
+                </Link>
+              </Fragment>
+            )}
+          </div>
+        </div>
       </nav>
     </div>
   );

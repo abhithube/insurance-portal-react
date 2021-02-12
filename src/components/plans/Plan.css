@@ -1,0 +1,11 @@
+#plan-component {
+  flex-basis: 20%;
+}
+
+#plan-details {
+  line-height: 32px;
+}
+
+#plan-benefits {
+  list-style: circle inside;
+}

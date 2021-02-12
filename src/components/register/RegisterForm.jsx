@@ -1,11 +1,12 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
 
-import { AuthContext } from '../../contexts/AuthContext';
 import './RegisterForm.css';
 
 const RegisterForm = () => {
-  const { register } = useContext(AuthContext);
+  const baseUrl =
+    'https://app.at-insurance.com/member-details-service/members/';
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -23,9 +24,18 @@ const RegisterForm = () => {
     e.preventDefault();
 
     if (!errors.username && !errors.password) {
-      const success = await register(username, email, password);
-      if (success) history.replace('/login?registered=true');
-      else history.push('/register?invalid=true');
+      try {
+        await Auth.signUp({ username, password, attributes: { email } });
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email }),
+        };
+        const res = await fetch(baseUrl, requestOptions);
+        if (res.ok) history.replace('/login?registered=true');
+      } catch (err) {
+        history.push('/register?invalid=true');
+      }
     }
   };
 
@@ -96,9 +106,9 @@ const RegisterForm = () => {
   };
 
   return (
-    <div id='register-component'>
-      <h1 id='register-title'>Sign Up</h1>
-      <form id='register-form' onSubmit={submitForm}>
+    <div id='register-component' className='card'>
+      <h1 className='card-header'>Sign Up</h1>
+      <form className='card-body' onSubmit={submitForm}>
         <div className='register-field'>
           <i className='fas fa-user register-icon'></i>
           <input

@@ -1,11 +1,12 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
 import './LoginForm.css';
 
 const LoginForm = () => {
-  const { login } = useContext(AuthContext);
+  const { setCurrentUser, setIsAuthenticated } = useContext(AuthContext);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,9 +19,16 @@ const LoginForm = () => {
     e.preventDefault();
 
     if (!errors.username && !errors.password) {
-      const success = await login(username, password);
-      if (success) history.replace('/');
-      else history.push('/login?invalid=true');
+      try {
+        await Auth.signIn(username, password);
+        setCurrentUser(username);
+        setIsAuthenticated(true);
+        history.replace('/');
+      } catch (err) {
+        setCurrentUser(null);
+        setIsAuthenticated(false);
+        history.push('/login?invalid=true');
+      }
     }
   };
 
@@ -75,9 +83,9 @@ const LoginForm = () => {
   };
 
   return (
-    <div id='login-component'>
-      <h1 id='login-title'>Sign In</h1>
-      <form id='login-form' onSubmit={submitForm}>
+    <div id='login-component' className='card'>
+      <h1 className='card-header'>Sign In</h1>
+      <form className='card-body' onSubmit={submitForm}>
         <div className='login-field'>
           <i className='fas fa-user login-icon'></i>
           <input
@@ -110,7 +118,7 @@ const LoginForm = () => {
           {errors.password && <i className='fas fa-exclamation-circle'></i>}
           <span className='login-error-msg'>{errors.password}</span>
         </div>
-        <button id='login-button' type='submit'>
+        <button className='button' type='submit'>
           Submit
         </button>
       </form>

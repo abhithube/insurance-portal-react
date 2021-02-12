@@ -4,6 +4,7 @@ import Navbar from './components/navbar/Navbar';
 import AuthContextProvider from './contexts/AuthContext';
 import './App.css';
 import RegisterPage from './components/register/RegisterPage';
+import PlansPage from './components/plans/PlansPage';
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
               </Route>
               <Route path='/register'>
                 <RegisterPage />
+              </Route>
+              <Route path='/plans'>
+                <PlansPage />
               </Route>
             </Switch>
           </div>
