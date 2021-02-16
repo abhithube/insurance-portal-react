@@ -4,7 +4,7 @@ import { Auth } from 'aws-amplify';
 export const AuthContext = createContext();
 
 const AuthContextProvider = (props) => {
-  const [currestUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const AuthContextProvider = (props) => {
   return (
     <AuthContext.Provider
       value={{
-        currestUser,
+        currentUser,
         setCurrentUser,
         isAuthenticated,
         setIsAuthenticated,

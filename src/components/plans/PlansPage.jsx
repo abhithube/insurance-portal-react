@@ -1,52 +1,71 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import Plan from './Plan';
+import { AuthContext } from '../../contexts/AuthContext';
+import useQuery from '../../hooks/useQuery.js';
 import './PlansPage.css';
 
+const plansUrl = process.env.REACT_APP_PLANS_URL;
+
 const PlansPage = () => {
-  const baseUrl = 'https://app.at-insurance.com/plan-details-service/plans/';
+  const { isAuthenticated } = useContext(AuthContext);
 
   const [plans, setPlans] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(baseUrl)
-      .then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            setPlans(data);
-            setLoading(false);
-          });
-        } else setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-      });
-  }, []);
+  const query = useQuery();
 
   // useEffect(() => {
   //   setLoading(true);
-  //   setPlans([
-  //     { id: 1, name: 'AT Bronze', cost: 19999, deductible: 600000 },
-  //     { id: 2, name: 'AT Silver', cost: 24999, deductible: 540000 },
-  //     { id: 3, name: 'AT Gold', cost: 29999, deductible: 480000 },
-  //     { id: 4, name: 'AT Platinum', cost: 34999, deductible: 400000 },
-  //   ]);
-  //   setLoading(false);
+  //   fetch(plansUrl)
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         res.json().then((data) => {
+  //           setPlans(data);
+  //           setLoading(false);
+  //         });
+  //       } else setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setLoading(false);
+  //     });
   // }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setPlans([
+      { id: 1, name: 'AT Bronze', cost: 19999, deductible: 600000 },
+      { id: 2, name: 'AT Silver', cost: 24999, deductible: 540000 },
+      { id: 3, name: 'AT Gold', cost: 29999, deductible: 480000 },
+      { id: 4, name: 'AT Platinum', cost: 34999, deductible: 400000 },
+    ]);
+    setLoading(false);
+  }, []);
 
   return (
     <div id='plans-page'>
+      {query.get('enrolled') && (
+        <span className='alert alert-danger'>
+          You are already enrolled in a plan.
+        </span>
+      )}
       {loading ? (
         <p>Loading...</p>
       ) : plans ? (
         <div id='plan-list'>
           {plans.map((plan) => {
             return (
-              <Fragment key={plan.id}>
-                <Plan plan={plan} />
-              </Fragment>
+              <Link
+                className='plan-link'
+                to={
+                  isAuthenticated
+                    ? `/payment?plan=${plan.id}`
+                    : '/login?unauthorized=true&referrer=/plans'
+                }
+              >
+                <Plan key={plan.id} plan={plan} />
+              </Link>
             );
           })}
         </div>

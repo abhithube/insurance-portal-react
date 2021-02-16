@@ -1,11 +1,25 @@
-#plan-component {
-  flex-basis: 20%;
+.plan-component {
+  transition: transform 0.25s;
 }
 
-#plan-details {
+.plan-component:hover {
+  transform: scale(1.05);
+}
+
+.plan-header {
+  font-size: 48px;
+  padding: 24px;
+}
+
+.plan-details {
   line-height: 32px;
 }
 
-#plan-benefits {
-  list-style: circle inside;
+.benefits-list {
+  list-style: circle outside;
+  margin-left: 16px;
+}
+
+.plan-select {
+  margin-top: 32px;
 }

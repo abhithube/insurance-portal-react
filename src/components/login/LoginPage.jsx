@@ -18,7 +18,7 @@ const LoginPage = () => {
         )}
         {query.get('unauthorized') && (
           <span className='alert alert-danger'>
-            You must be logged in to access this page
+            You must be logged in to continue
           </span>
         )}
         {query.get('logout') && (

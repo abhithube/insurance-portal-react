@@ -27,6 +27,16 @@ body {
   font-family: 'Quicksand', sans-serif;
 }
 
+input,
+p,
+ul {
+  color: var(--color-text);
+}
+
+a {
+  text-decoration: none;
+}
+
 .card {
   width: 100%;
   display: flex;
@@ -56,12 +66,6 @@ body {
   background-color: var(--color-light);
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
-}
-
-input,
-p,
-ul {
-  color: var(--color-text);
 }
 
 .button {

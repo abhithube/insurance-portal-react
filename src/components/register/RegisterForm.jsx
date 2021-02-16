@@ -5,8 +5,7 @@ import { Auth } from 'aws-amplify';
 import './RegisterForm.css';
 
 const RegisterForm = () => {
-  const baseUrl =
-    'https://app.at-insurance.com/member-details-service/members/';
+  const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -31,7 +30,7 @@ const RegisterForm = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, email }),
         };
-        const res = await fetch(baseUrl, requestOptions);
+        const res = await fetch(membersUrl, requestOptions);
         if (res.ok) history.replace('/login?registered=true');
       } catch (err) {
         history.push('/register?invalid=true');
@@ -116,10 +115,11 @@ const RegisterForm = () => {
             className='register-input'
             type='text'
             placeholder='Username'
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-          ></input>
+          />
         </div>
         <div className='register-error'>
           {errors.username && <i className='fas fa-exclamation-circle'></i>}
@@ -132,10 +132,11 @@ const RegisterForm = () => {
             className='register-input'
             type='text'
             placeholder='Email'
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-          ></input>
+          />
         </div>
         <div className='register-error'>
           {errors.email && <i className='fas fa-exclamation-circle'></i>}
@@ -148,16 +149,17 @@ const RegisterForm = () => {
             className='register-input'
             type='password'
             placeholder='Password'
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-          ></input>
+          />
         </div>
         <div className='register-error'>
           {errors.password && <i className='fas fa-exclamation-circle'></i>}
           <span className='register-error-msg'>{errors.password}</span>
         </div>
-        <button id='register-button' type='submit'>
+        <button className='button' type='submit'>
           Submit
         </button>
       </form>

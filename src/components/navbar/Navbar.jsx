@@ -27,7 +27,7 @@ const Navbar = () => {
     <div id='navbar-component'>
       <nav id='navbar'>
         <div id='navbar-header'>
-          <Link id='navbar-title' to='/'>
+          <Link id='navbar-title' to={isAuthenticated ? '/dashboard' : '/'}>
             <i id='logo' className='fas fa-users'></i>
             <span>AT Insurance</span>
           </Link>

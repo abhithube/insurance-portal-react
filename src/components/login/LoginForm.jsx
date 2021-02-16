@@ -4,6 +4,7 @@ import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
 import './LoginForm.css';
+import useQuery from '../../hooks/useQuery';
 
 const LoginForm = () => {
   const { setCurrentUser, setIsAuthenticated } = useContext(AuthContext);
@@ -14,6 +15,7 @@ const LoginForm = () => {
   const [errors, setErrors] = useState({ username: null, password: null });
 
   const history = useHistory();
+  const query = useQuery();
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const LoginForm = () => {
         await Auth.signIn(username, password);
         setCurrentUser(username);
         setIsAuthenticated(true);
-        history.replace('/');
+        history.replace(query.get('referrer') || '/dashboard');
       } catch (err) {
         setCurrentUser(null);
         setIsAuthenticated(false);
@@ -93,10 +95,11 @@ const LoginForm = () => {
             className='login-input'
             type='text'
             placeholder='Username'
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-          ></input>
+          />
         </div>
         <div className='login-error'>
           {errors.username && <i className='fas fa-exclamation-circle'></i>}
@@ -109,10 +112,11 @@ const LoginForm = () => {
             className='login-input'
             type='password'
             placeholder='Password'
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             onFocus={handleFocus}
             onBlur={handleBlur}
-          ></input>
+          />
         </div>
         <div className='login-error'>
           {errors.password && <i className='fas fa-exclamation-circle'></i>}

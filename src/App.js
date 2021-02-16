@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import LoginPage from './components/login/LoginPage';
+
 import Navbar from './components/navbar/Navbar';
-import AuthContextProvider from './contexts/AuthContext';
-import './App.css';
+import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
 import PlansPage from './components/plans/PlansPage';
+import PaymentPage from './components/payment/PaymentPage';
+import AuthContextProvider from './contexts/AuthContext';
+import './App.css';
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
               </Route>
               <Route path='/plans'>
                 <PlansPage />
+              </Route>
+              <Route path='/payment'>
+                <PaymentPage />
               </Route>
             </Switch>
           </div>
