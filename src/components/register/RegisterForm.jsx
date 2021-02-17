@@ -31,8 +31,7 @@ const RegisterForm = ({ setError }) => {
     try {
       setLoading(true);
       await Auth.signUp({ username, password, attributes: { email } });
-
-      // await post(membersUrl, { username, email });
+      await post(membersUrl, { username, email });
       setRedirect(true);
     } catch (err) {
       setError(err.message);
@@ -51,11 +50,7 @@ const RegisterForm = ({ setError }) => {
           valid = false;
         }
 
-        setErrors({
-          username: msg,
-          email: errors.email,
-          password: errors.password,
-        });
+        setErrors({ ...errors, username: msg });
         break;
       case 'email':
         if (!element.value.includes('@')) {
@@ -63,11 +58,7 @@ const RegisterForm = ({ setError }) => {
           valid = false;
         }
 
-        setErrors({
-          username: errors.username,
-          email: msg,
-          password: errors.password,
-        });
+        setErrors({ ...errors, email: msg });
         break;
       case 'password':
         if (element.value.length < 6) {
@@ -75,11 +66,7 @@ const RegisterForm = ({ setError }) => {
           valid = false;
         }
 
-        setErrors({
-          username: errors.username,
-          email: errors.email,
-          password: msg,
-        });
+        setErrors({ ...errors, password: msg });
         break;
       default:
         break;
@@ -132,7 +119,7 @@ const RegisterForm = ({ setError }) => {
           <input
             id='email'
             className='register-input'
-            type='text'
+            type='email'
             placeholder='Email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}

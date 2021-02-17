@@ -1,5 +1,5 @@
-import { Fragment, useContext, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, NavLink, Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
@@ -11,14 +11,19 @@ const Navbar = () => {
   const [redirect, setRedirect] = useState(false);
 
   const handleLogout = async () => {
+    console.log('logging out');
     try {
       await Auth.signOut();
-      removeAuthentication();
       setRedirect(true);
+      removeAuthentication();
     } catch (err) {
       return false;
     }
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) setRedirect(false);
+  }, [isAuthenticated]);
 
   return (
     <div id='navbar-component'>
@@ -31,32 +36,32 @@ const Navbar = () => {
         </div>
         <div id='navbar-tabs'>
           <div id='navbar-left'>
-            <Link className='navbar-link' to='/plans'>
+            <NavLink className='navbar-link' to='/plans'>
               Plans
-            </Link>
-            <Link className='navbar-link' to='/about'>
+            </NavLink>
+            <NavLink className='navbar-link' to='/about'>
               About
-            </Link>
+            </NavLink>
           </div>
           <div id='navbar-right'>
             {isAuthenticated ? (
-              <Fragment>
-                <Link className='navbar-link' to='/profile'>
+              <>
+                <NavLink className='navbar-link' to='/profile'>
                   Profile
-                </Link>
+                </NavLink>
                 <button className='navbar-link' onClick={handleLogout}>
                   Logout
                 </button>
-              </Fragment>
+              </>
             ) : (
-              <Fragment>
-                <Link className='navbar-link' to='/login'>
+              <>
+                <NavLink className='navbar-link' to='/login'>
                   Login
-                </Link>
-                <Link className='navbar-link' to='/register'>
+                </NavLink>
+                <NavLink className='navbar-link' to='/register'>
                   Register
-                </Link>
-              </Fragment>
+                </NavLink>
+              </>
             )}
           </div>
         </div>

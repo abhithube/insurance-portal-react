@@ -22,18 +22,17 @@ const LoginForm = ({ setError }) => {
   const submitForm = async (e) => {
     e.preventDefault();
 
-    if (!errors.username && !errors.password) {
-      try {
-        setLoading(true);
-        await Auth.signIn(username, password);
-        setAuthentication(username);
+    if (errors.username || errors.password) return;
 
-        setRedirect(true);
-      } catch (err) {
-        removeAuthentication();
-        setError('Invalid credentials');
-        setLoading(false);
-      }
+    try {
+      setLoading(true);
+      await Auth.signIn(username, password);
+      setAuthentication(username);
+      setRedirect(true);
+    } catch (err) {
+      removeAuthentication();
+      setError('Invalid credentials');
+      setLoading(false);
     }
   };
 
@@ -47,10 +46,7 @@ const LoginForm = ({ setError }) => {
           valid = false;
         }
 
-        setErrors({
-          username: msg,
-          password: errors.password,
-        });
+        setErrors({ ...errors, username: msg });
         break;
       case 'password':
         if (element.value.length < 6) {
@@ -58,10 +54,7 @@ const LoginForm = ({ setError }) => {
           valid = false;
         }
 
-        setErrors({
-          username: errors.username,
-          password: msg,
-        });
+        setErrors({ ...errors, password: msg });
         break;
       default:
         break;

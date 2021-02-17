@@ -10,10 +10,7 @@ const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((res) => setAuthentication(res.username))
-      .catch((err) => {
-        console.log(err);
-        removeAuthentication();
-      });
+      .catch((err) => removeAuthentication());
   }, []);
 
   const setAuthentication = (username) => {

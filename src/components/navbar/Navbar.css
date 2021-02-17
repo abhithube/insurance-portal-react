@@ -44,10 +44,16 @@
 }
 
 .navbar-link {
-  padding-right: 24px;
+  padding-bottom: 5px;
+  margin: 0 12px;
   color: white;
   font-size: 18px;
   text-decoration: none;
+}
+
+.active {
+  color: #eee;
+  border-bottom: 2px solid #eee;
 }
 
 button {

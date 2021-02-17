@@ -47,7 +47,7 @@ const Plan = ({ plan, setError }) => {
           </button>
         </div>
       </div>
-      {redirect && <Redirect to={`/payment?plan=${plan.id}`} />}
+      {redirect && <Redirect push to={`/payment?plan=${plan.id}`} />}
     </div>
   );
 };

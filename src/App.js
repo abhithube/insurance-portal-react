@@ -6,6 +6,7 @@ import Navbar from './components/navbar/Navbar';
 import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
 import PlansPage from './components/plans/PlansPage';
+import ProfilePage from './components/profile/ProfilePage';
 import PaymentPage from './components/payment/PaymentPage';
 import AuthContextProvider from './contexts/AuthContext';
 import './App.css';
@@ -29,6 +30,7 @@ function App() {
               <Route path='/login' component={LoginPage} />
               <Route path='/register' component={RegisterPage} />
               <Route path='/plans' component={PlansPage} />
+              <PrivateRoute path='/profile' component={ProfilePage} />
               <PrivateRoute path='/payment' component={PaymentPage} />
             </Switch>
           </div>

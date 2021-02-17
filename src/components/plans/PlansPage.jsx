@@ -15,24 +15,24 @@ const PlansPage = () => {
 
   const { get } = useFetch();
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   get(plansUrl).then((res) => {
-  //     setPlans(res);
-  //     setLoading(false);
-  //   });
-  // }, [get]);
-
   useEffect(() => {
     setLoading(true);
-    setPlans([
-      { id: 1, name: 'AT Bronze', cost: 19999, deductible: 600000 },
-      { id: 2, name: 'AT Silver', cost: 24999, deductible: 540000 },
-      { id: 3, name: 'AT Gold', cost: 29999, deductible: 480000 },
-      { id: 4, name: 'AT Platinum', cost: 34999, deductible: 400000 },
-    ]);
-    setLoading(false);
-  }, []);
+    get(plansUrl).then((res) => {
+      setPlans(res);
+      setLoading(false);
+    });
+  }, [get]);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setPlans([
+  //     { id: 1, name: 'AT Bronze', cost: 19999, deductible: 600000 },
+  //     { id: 2, name: 'AT Silver', cost: 24999, deductible: 540000 },
+  //     { id: 3, name: 'AT Gold', cost: 29999, deductible: 480000 },
+  //     { id: 4, name: 'AT Platinum', cost: 34999, deductible: 400000 },
+  //   ]);
+  //   setLoading(false);
+  // }, []);
 
   return (
     <div id='plans-page'>

@@ -1,10 +1,11 @@
 import { useContext } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
 const PrivateRoute = ({ path, component }) => {
   const { isAuthenticated } = useContext(AuthContext);
+  const location = useLocation();
 
   return isAuthenticated ? (
     <Route path={path} component={component} />
@@ -12,6 +13,7 @@ const PrivateRoute = ({ path, component }) => {
     <Redirect
       to={{
         pathname: '/login',
+        search: `?referrer=${location.pathname + location.search}`,
         state: {
           alert: {
             type: 'error',
