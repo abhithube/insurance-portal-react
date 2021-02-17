@@ -1,32 +1,25 @@
+import { useState } from 'react';
+
 import LoginForm from './LoginForm';
-import useQuery from '../../hooks/useQuery';
+import Alert from '../util/Alert';
+import useAlert from '../../hooks/useAlert';
 import './LoginPage.css';
 
 const LoginPage = () => {
-  const query = useQuery();
+  const { alert } = useAlert();
+  const [error, setError] = useState(null);
 
   return (
     <div id='login-page'>
       <div id='login-alert'>
-        {query.get('invalid') && (
-          <span className='alert alert-danger'>Invalid credentials</span>
-        )}
-        {query.get('registered') && (
-          <span className='alert alert-success'>
-            Account created successfully
-          </span>
-        )}
-        {query.get('unauthorized') && (
-          <span className='alert alert-danger'>
-            You must be logged in to continue
-          </span>
-        )}
-        {query.get('logout') && (
-          <span className='alert alert-success'>Logged out successfully</span>
+        {error ? (
+          <Alert type='error' message={error} />
+        ) : (
+          alert && <Alert type={alert.type} message={alert.message} />
         )}
       </div>
       <div id='login-body'>
-        <LoginForm />
+        <LoginForm setError={setError} />
       </div>
     </div>
   );

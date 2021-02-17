@@ -1,20 +1,18 @@
-import LoginForm from './RegisterForm';
-import useQuery from '../../hooks/useQuery';
+import { useState } from 'react';
+
+import RegisterForm from './RegisterForm';
+import Alert from '../util/Alert';
 import './RegisterPage.css';
 
 const RegisterPage = () => {
-  const query = useQuery();
+  const [error, setError] = useState(null);
 
   return (
     <div id='register-page'>
       <div id='register-alert'>
-        {query.get('invalid') && (
-          <span className='alert alert-danger'>Username already taken</span>
-        )}
+        {error && <Alert type='error' message={error} />}
       </div>
-      <div id='register-body'>
-        <LoginForm />
-      </div>
+      <RegisterForm setError={setError} />
     </div>
   );
 };

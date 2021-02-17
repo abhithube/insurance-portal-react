@@ -3,35 +3,39 @@ import { Auth } from 'aws-amplify';
 
 export const AuthContext = createContext();
 
-const AuthContextProvider = (props) => {
+const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    updateAuthStatus();
+    Auth.currentAuthenticatedUser()
+      .then((res) => setAuthentication(res.username))
+      .catch((err) => {
+        console.log(err);
+        removeAuthentication();
+      });
   }, []);
 
-  const updateAuthStatus = async () => {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      setCurrentUser(user.username);
-      setIsAuthenticated(true);
-    } catch (err) {
-      setCurrentUser(null);
-      setIsAuthenticated(false);
-    }
+  const setAuthentication = (username) => {
+    setCurrentUser(username);
+    setIsAuthenticated(true);
+  };
+
+  const removeAuthentication = () => {
+    setCurrentUser(null);
+    setIsAuthenticated(false);
   };
 
   return (
     <AuthContext.Provider
       value={{
         currentUser,
-        setCurrentUser,
         isAuthenticated,
-        setIsAuthenticated,
+        setAuthentication,
+        removeAuthentication,
       }}
     >
-      {props.children}
+      {children}
     </AuthContext.Provider>
   );
 };

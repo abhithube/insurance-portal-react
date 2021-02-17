@@ -1,0 +1,16 @@
+.alert {
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: white;
+}
+
+.alert-success {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.alert-error {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}

@@ -6,22 +6,8 @@
 }
 
 #register-alert {
-  width: 400px;
   flex-basis: 25%;
-  padding-bottom: 16px;
   display: flex;
-  flex-direction: row;
   align-items: flex-end;
-}
-
-#register-alert .alert {
-  width: 100%;
-  text-align: center;
-}
-
-#register-body {
-  width: 400px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  padding-bottom: 16px;
 }

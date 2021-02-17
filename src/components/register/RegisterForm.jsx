@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import './RegisterForm.css';
+import useFetch from '../../hooks/useFetch';
 
-const RegisterForm = () => {
-  const membersUrl = process.env.REACT_APP_MEMBERS_URL;
+const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 
+const RegisterForm = ({ setError }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,24 +18,25 @@ const RegisterForm = () => {
     password: null,
   });
 
-  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+
+  const { post } = useFetch();
 
   const submitForm = async (e) => {
     e.preventDefault();
 
-    if (!errors.username && !errors.password) {
-      try {
-        await Auth.signUp({ username, password, attributes: { email } });
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email }),
-        };
-        const res = await fetch(membersUrl, requestOptions);
-        if (res.ok) history.replace('/login?registered=true');
-      } catch (err) {
-        history.push('/register?invalid=true');
-      }
+    if (errors.username || errors.email || errors.password) return;
+
+    try {
+      setLoading(true);
+      await Auth.signUp({ username, password, attributes: { email } });
+
+      // await post(membersUrl, { username, email });
+      setRedirect(true);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -159,10 +161,24 @@ const RegisterForm = () => {
           {errors.password && <i className='fas fa-exclamation-circle'></i>}
           <span className='register-error-msg'>{errors.password}</span>
         </div>
-        <button className='button' type='submit'>
+        <button className='button' type='submit' disabled={loading}>
           Submit
         </button>
       </form>
+      {redirect && (
+        <Redirect
+          push
+          to={{
+            pathname: '/login',
+            state: {
+              alert: {
+                type: 'success',
+                message: 'Account created successfully',
+              },
+            },
+          }}
+        />
+      )}
     </div>
   );
 };

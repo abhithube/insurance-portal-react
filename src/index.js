@@ -3,15 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Amplify from 'aws-amplify';
-
-Amplify.configure({
-  Auth: {
-    region: 'us-west-2',
-    userPoolId: 'us-west-2_suSvpK4nC',
-    userPoolWebClientId: '381fidnic8mc7adsr56blfiqvp',
-  },
-});
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,20 +1,22 @@
 import { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
-import './LoginForm.css';
 import useQuery from '../../hooks/useQuery';
+import './LoginForm.css';
 
-const LoginForm = () => {
-  const { setCurrentUser, setIsAuthenticated } = useContext(AuthContext);
+const LoginForm = ({ setError }) => {
+  const { setAuthentication, removeAuthentication } = useContext(AuthContext);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [errors, setErrors] = useState({ username: null, password: null });
 
-  const history = useHistory();
+  const [loading, setLoading] = useState(false);
+  const [redirect, setRedirect] = useState();
+
   const query = useQuery();
 
   const submitForm = async (e) => {
@@ -22,14 +24,15 @@ const LoginForm = () => {
 
     if (!errors.username && !errors.password) {
       try {
+        setLoading(true);
         await Auth.signIn(username, password);
-        setCurrentUser(username);
-        setIsAuthenticated(true);
-        history.replace(query.get('referrer') || '/dashboard');
+        setAuthentication(username);
+
+        setRedirect(true);
       } catch (err) {
-        setCurrentUser(null);
-        setIsAuthenticated(false);
-        history.push('/login?invalid=true');
+        removeAuthentication();
+        setError('Invalid credentials');
+        setLoading(false);
       }
     }
   };
@@ -122,10 +125,11 @@ const LoginForm = () => {
           {errors.password && <i className='fas fa-exclamation-circle'></i>}
           <span className='login-error-msg'>{errors.password}</span>
         </div>
-        <button className='button' type='submit'>
+        <button className='button' type='submit' disabled={loading}>
           Submit
         </button>
       </form>
+      {redirect && <Redirect push to={query.get('referrer') || '/dashboard'} />}
     </div>
   );
 };

@@ -1,36 +1,27 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import Plan from './Plan';
-import { AuthContext } from '../../contexts/AuthContext';
-import useQuery from '../../hooks/useQuery.js';
+import Alert from '../util/Alert';
+import useFetch from '../../hooks/useFetch';
 import './PlansPage.css';
 
 const plansUrl = process.env.REACT_APP_PLANS_URL;
 
 const PlansPage = () => {
-  const { isAuthenticated } = useContext(AuthContext);
-
   const [plans, setPlans] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  const query = useQuery();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const { get } = useFetch();
 
   // useEffect(() => {
   //   setLoading(true);
-  //   fetch(plansUrl)
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         res.json().then((data) => {
-  //           setPlans(data);
-  //           setLoading(false);
-  //         });
-  //       } else setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setLoading(false);
-  //     });
-  // }, []);
+  //   get(plansUrl).then((res) => {
+  //     setPlans(res);
+  //     setLoading(false);
+  //   });
+  // }, [get]);
 
   useEffect(() => {
     setLoading(true);
@@ -45,32 +36,17 @@ const PlansPage = () => {
 
   return (
     <div id='plans-page'>
-      {query.get('enrolled') && (
-        <span className='alert alert-danger'>
-          You are already enrolled in a plan.
-        </span>
-      )}
-      {loading ? (
-        <p>Loading...</p>
-      ) : plans ? (
+      <div id='plans-header'>
+        <h1 id='plans-title'>Plans</h1>
+        {error && <Alert type='error' message={error} />}
+        {loading && <div>Loading...</div>}
+      </div>
+      {plans && (
         <div id='plan-list'>
-          {plans.map((plan) => {
-            return (
-              <Link
-                className='plan-link'
-                to={
-                  isAuthenticated
-                    ? `/payment?plan=${plan.id}`
-                    : '/login?unauthorized=true&referrer=/plans'
-                }
-              >
-                <Plan key={plan.id} plan={plan} />
-              </Link>
-            );
-          })}
+          {plans.map((plan) => (
+            <Plan key={plan.id} plan={plan} setError={setError} />
+          ))}
         </div>
-      ) : (
-        <p>There was an error fetching our available plans. Try again later.</p>
       )}
     </div>
   );

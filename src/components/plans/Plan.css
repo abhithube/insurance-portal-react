@@ -1,9 +1,5 @@
 .plan-component {
-  transition: transform 0.25s;
-}
-
-.plan-component:hover {
-  transform: scale(1.05);
+  flex-basis: 20%;
 }
 
 .plan-header {

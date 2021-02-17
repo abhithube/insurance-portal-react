@@ -1,23 +1,20 @@
-import { Fragment, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Fragment, useContext, useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { setCurrentUser, isAuthenticated, setIsAuthenticated } = useContext(
-    AuthContext
-  );
+  const { isAuthenticated, removeAuthentication } = useContext(AuthContext);
 
-  const history = useHistory();
+  const [redirect, setRedirect] = useState(false);
 
   const handleLogout = async () => {
     try {
       await Auth.signOut();
-      setCurrentUser(null);
-      setIsAuthenticated(false);
-      history.push('/login?logout=true');
+      removeAuthentication();
+      setRedirect(true);
     } catch (err) {
       return false;
     }
@@ -63,6 +60,17 @@ const Navbar = () => {
             )}
           </div>
         </div>
+        {redirect && (
+          <Redirect
+            push
+            to={{
+              pathname: '/login',
+              state: {
+                alert: { type: 'success', message: 'Logged out successfully' },
+              },
+            }}
+          />
+        )}
       </nav>
     </div>
   );

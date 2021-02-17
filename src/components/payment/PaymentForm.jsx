@@ -1,20 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import Plan from '../plans/Plan';
 import { AuthContext } from '../../contexts/AuthContext';
 import useQuery from '../../hooks/useQuery';
 import './PaymentForm.css';
+import useFetch from '../../hooks/useFetch';
 
-const planUrl = process.env.REACT_APP_PLANS_URL;
-const enrollmentUrl = process.env.REACT_APP_ENROLLMENT_URLl;
+const plansUrl = process.env.REACT_APP_PLANS_URL;
+const enrollmentUrl = process.env.REACT_APP_ENROLLMENT_URL;
 
 const PaymentForm = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -23,25 +25,20 @@ const PaymentForm = () => {
   const query = useQuery();
   const planId = query.get('plan');
 
-  // useEffect(() => {
-  //   fetch(planUrl + planId)
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         res.json().then((data) => {
-  //           setPlan(data);
-  //           setLoading(false);
-  //         });
-  //       } else setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setLoading(false);
-  //     });
-  // }, [currentUser, planId]);
+  const { get, post } = useFetch();
 
   useEffect(() => {
     setPlan({ id: 1, name: 'AT Bronze', cost: 19999, deductible: 600000 });
     setLoading(false);
   }, []);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   get(plansUrl + planId).then((res) => {
+  //     setPlan(res);
+  //     setLoading(false);
+  //   });
+  // }, [get, planId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,34 +49,24 @@ const PaymentForm = () => {
       elements.getElement(CardElement)
     );
 
-    if (err) console.log(err);
-    else {
-      const paymentDetails = {
-        sourceId: source.id,
-        username: currentUser,
-        plan,
-      };
+    if (err) return;
 
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentDetails),
-      };
+    const paymentDetails = {
+      sourceId: source.id,
+      username: currentUser,
+      plan,
+    };
 
-      try {
-        const res = await fetch(enrollmentUrl, requestOptions);
-        if (res.ok) history.replace('/dashboard?enrolled=true');
-      } catch (err) {
-        history.push('/payment?invalid=true');
-      }
-    }
+    await post(enrollmentUrl, paymentDetails);
+    if (success) setSuccess(true);
+    else history.push('/payment?invalid=true');
   };
 
   return (
     <div id='payment-component'>
       {loading ? (
         <div>Loading...</div>
-      ) : (
+      ) : plan ? (
         <>
           <Plan plan={plan} />
           <form id='payment-form' onSubmit={handleSubmit}>
@@ -89,7 +76,12 @@ const PaymentForm = () => {
             </button>
           </form>
         </>
+      ) : (
+        <div>
+          There was an error retrieving the selected plan. Try again later.
+        </div>
       )}
+      {success && <Redirect push to='dashboard?enrolled=true' />}
     </div>
   );
 };
