@@ -3,7 +3,7 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
-const PrivateRoute = ({ path, component }) => {
+const ProtectedRoute = ({ path, component }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const location = useLocation();
 
@@ -25,4 +25,4 @@ const PrivateRoute = ({ path, component }) => {
   );
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;

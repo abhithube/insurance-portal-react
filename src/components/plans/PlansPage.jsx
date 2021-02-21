@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import Plan from './Plan';
 import Alert from '../util/Alert';
-import useFetch from '../../hooks/useFetch';
+import useAxios from '../../hooks/useAxios';
 import './PlansPage.css';
 
 const plansUrl = process.env.REACT_APP_PLANS_URL;
@@ -13,7 +13,7 @@ const PlansPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const { get } = useFetch();
+  const { get } = useAxios();
 
   useEffect(() => {
     setLoading(true);

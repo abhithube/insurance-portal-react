@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import { AuthContext } from '../../contexts/AuthContext';
@@ -15,9 +15,9 @@ const LoginForm = ({ setError }) => {
   const [errors, setErrors] = useState({ username: null, password: null });
 
   const [loading, setLoading] = useState(false);
-  const [redirect, setRedirect] = useState();
 
   const query = useQuery();
+  const history = useHistory();
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ const LoginForm = ({ setError }) => {
       setLoading(true);
       await Auth.signIn(username, password);
       setAuthentication(username);
-      setRedirect(true);
+      history.push(query.get('referrer') || '/dashboard');
     } catch (err) {
       removeAuthentication();
       setError('Invalid credentials');
@@ -122,7 +122,6 @@ const LoginForm = ({ setError }) => {
           Submit
         </button>
       </form>
-      {redirect && <Redirect push to={query.get('referrer') || '/dashboard'} />}
     </div>
   );
 };

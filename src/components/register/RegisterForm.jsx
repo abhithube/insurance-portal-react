@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import './RegisterForm.css';
-import useFetch from '../../hooks/useFetch';
+import useAxios from '../../hooks/useAxios';
 
 const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 
@@ -21,7 +21,7 @@ const RegisterForm = ({ setError }) => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  const { post } = useFetch();
+  const { post } = useAxios();
 
   const submitForm = async (e) => {
     e.preventDefault();

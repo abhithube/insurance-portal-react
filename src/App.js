@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 
-import PrivateRoute from './components/util/PrivateRoute';
+import ProtectedRoute from './components/util/ProtectedRoute';
 import Navbar from './components/navbar/Navbar';
 import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
@@ -30,8 +30,8 @@ function App() {
               <Route path='/login' component={LoginPage} />
               <Route path='/register' component={RegisterPage} />
               <Route path='/plans' component={PlansPage} />
-              <PrivateRoute path='/profile' component={ProfilePage} />
-              <PrivateRoute path='/payment' component={PaymentPage} />
+              <ProtectedRoute path='/profile' component={ProfilePage} />
+              <ProtectedRoute path='/payment' component={PaymentPage} />
             </Switch>
           </div>
         </AuthContextProvider>

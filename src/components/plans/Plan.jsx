@@ -1,25 +1,28 @@
-import { useContext, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../../contexts/AuthContext';
-import useFetch from '../../hooks/useFetch';
+import useAxios from '../../hooks/useAxios';
 import './Plan.css';
 
 const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 
 const Plan = ({ plan, setError }) => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, isAuthenticated } = useContext(AuthContext);
 
-  const [redirect, setRedirect] = useState(false);
-
-  const { get } = useFetch();
+  const { get } = useAxios();
+  const history = useHistory();
 
   const handleClick = async (id) => {
-    // get(membersUrl + currentUser).then((res) => {
-    //   if (res.plan) setError('You are already enrolled in a plan');
-    //   else setRedirect(true);
-    // });
-    setRedirect(true);
+    if (!isAuthenticated) {
+      setError('You must be logged in enroll in a plan');
+      return;
+    }
+
+    get(membersUrl + currentUser).then((res) => {
+      if (res.plan) setError('You are already enrolled in a plan');
+      else history.push(`/payment?plan=${id}`);
+    });
   };
 
   return (
@@ -47,7 +50,6 @@ const Plan = ({ plan, setError }) => {
           </button>
         </div>
       </div>
-      {redirect && <Redirect push to={`/payment?plan=${plan.id}`} />}
     </div>
   );
 };

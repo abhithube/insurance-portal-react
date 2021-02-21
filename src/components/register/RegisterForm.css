@@ -26,10 +26,6 @@
   outline: none;
 }
 
-.register-input:-webkit-autofill {
-  box-shadow: 0 0 0 30px white inset !important;
-}
-
 .register-error {
   margin: 4px 0 12px 8px;
   color: var(--color-error);

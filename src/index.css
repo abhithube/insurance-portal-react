@@ -8,9 +8,10 @@ body,
 
 :root {
   --color-primary: #00aaff;
-  --color-dark: #008fff;
-  --color-light: #eefdfd;
-  --color-secondary: #8080ff;
+  --color-primary-dark: #008fff;
+  --color-secondary: #a0a0ff;
+  --color-secondary-dark: #8080ff;
+  --color-secondary-light: #e6e6fa;
   --color-text: #555;
   --color-background: #eee;
   --color-error: #ff4444;
@@ -50,7 +51,6 @@ a {
 
 .card-header {
   width: 100%;
-  margin: 0;
   padding: 16px 0;
   text-align: center;
   color: white;
@@ -70,21 +70,22 @@ a {
 }
 
 .button {
-  width: 150px;
-  height: 50px;
+  width: 100px;
+  height: 40px;
   align-self: center;
   color: white;
   background-color: var(--color-primary);
   border: none;
   border-radius: 8px;
+  box-shadow: 0 2px 4px 0 #aaa;
 }
 
 .button:hover {
-  background-color: var(--color-dark);
+  background-color: var(--color-primary-dark);
 }
 
 .button:disabled {
-  cursor: default;
+  cursor: not-allowed;
   background-color: #aaa;
   color: #ddd;
 }
