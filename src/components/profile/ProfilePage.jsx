@@ -13,6 +13,7 @@ const ProfilePage = () => {
 
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -20,8 +21,9 @@ const ProfilePage = () => {
       try {
         const res = await axios.get(membersUrl + currentUser);
         if (res.status === 200) setMember(res.data);
-        setLoading(false);
       } catch (err) {
+        setError('There was an error fetching your profile');
+      } finally {
         setLoading(false);
       }
     };
@@ -39,6 +41,7 @@ const ProfilePage = () => {
       }
       setLoading(false);
     } catch (err) {
+      setError('There was an error cancelling your membership');
       setLoading(false);
     }
   };

@@ -28,10 +28,11 @@ const LoginForm = ({ setError }) => {
       setLoading(true);
       await Auth.signIn(username, password);
       setAuthentication(username);
-      history.push(query.get('referrer') || '/dashboard');
+      history.push(query.get('referrer') || '/');
     } catch (err) {
       removeAuthentication();
       setError('Invalid credentials');
+    } finally {
       setLoading(false);
     }
   };

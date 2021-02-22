@@ -6,11 +6,14 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     Auth.currentAuthenticatedUser()
       .then((res) => setAuthentication(res.username))
-      .catch((err) => removeAuthentication());
+      .catch((err) => removeAuthentication())
+      .finally(() => setLoading(false));
   }, []);
 
   const setAuthentication = (username) => {
@@ -30,6 +33,7 @@ const AuthContextProvider = ({ children }) => {
         isAuthenticated,
         setAuthentication,
         removeAuthentication,
+        loading,
       }}
     >
       {children}

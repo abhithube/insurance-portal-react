@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import Plan from './Plan';
 import Alert from '../util/Alert';
-import useAxios from '../../hooks/useAxios';
+import axios from 'axios';
 import './PlansPage.css';
 
 const plansUrl = process.env.REACT_APP_PLANS_URL;
@@ -13,15 +13,18 @@ const PlansPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const { get } = useAxios();
-
   useEffect(() => {
-    setLoading(true);
-    get(plansUrl).then((res) => {
-      setPlans(res);
+    try {
+      setLoading(true);
+      axios.get(plansUrl).then((res) => {
+        setPlans(res.data);
+      });
+    } catch (err) {
+      setError('You are already enrolled in a plan');
+    } finally {
       setLoading(false);
-    });
-  }, [get]);
+    }
+  }, []);
 
   // useEffect(() => {
   //   setLoading(true);

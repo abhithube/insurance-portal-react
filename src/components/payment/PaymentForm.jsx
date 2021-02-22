@@ -4,7 +4,7 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 import { AuthContext } from '../../contexts/AuthContext';
 import useQuery from '../../hooks/useQuery';
-import useAxios from '../../hooks/useAxios';
+import axios from 'axios';
 import './PaymentForm.css';
 
 const plansUrl = process.env.REACT_APP_PLANS_URL;
@@ -39,7 +39,6 @@ const PaymentForm = ({ setError }) => {
 
   const query = useQuery();
   const history = useHistory();
-  const { get, post } = useAxios();
 
   const planId = query.get('plan');
 
@@ -50,11 +49,19 @@ const PaymentForm = ({ setError }) => {
 
   useEffect(() => {
     setLoading(true);
-    get(plansUrl + planId).then((res) => {
-      setPlan(res);
-      setLoading(false);
-    });
-  }, [get, planId]);
+    axios
+      .get(plansUrl + planId)
+      .then((res) => {
+        setPlan(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError('There was an error retrieving the selected plan');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [planId, setError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,24 +80,25 @@ const PaymentForm = ({ setError }) => {
       plan,
     };
 
-    setLoading(true);
-    const success = await post(enrollmentUrl + 'create', paymentDetails);
-    if (success) {
+    try {
+      setLoading(true);
+      await axios.post(enrollmentUrl + 'create', paymentDetails);
       history.push({
         pathname: '/dashboard',
         state: {
           alert: { type: 'success', message: 'Plan enrollment successful' },
         },
       });
-    } else {
-      setError('Unable to process the transaction');
+    } catch (err) {
+      setError('There was an error processing the transaction');
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div id='payment-component'>
-      {plan ? (
+      {plan && (
         <>
           <div id='payment-card'>
             <h3 id='payment-header'>{plan.name}</h3>
@@ -104,10 +112,6 @@ const PaymentForm = ({ setError }) => {
             </button>
           </form>
         </>
-      ) : (
-        <div>
-          There was an error retrieving the selected plan. Try again later.
-        </div>
       )}
     </div>
   );

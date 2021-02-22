@@ -16,7 +16,6 @@
   justify-content: center;
   flex-basis: 250px;
   background-color: var(--color-secondary-dark);
-  border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
 }
 
@@ -30,17 +29,10 @@
 
 #navbar-tabs {
   width: 100%;
+  margin: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-#navbar-left {
-  margin-left: 40px;
-}
-
-#navbar-right {
-  margin-right: 40px;
 }
 
 .navbar-link {

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
+import axios from 'axios';
 
 import './RegisterForm.css';
-import useAxios from '../../hooks/useAxios';
 
 const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 
@@ -21,8 +21,6 @@ const RegisterForm = ({ setError }) => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  const { post } = useAxios();
-
   const submitForm = async (e) => {
     e.preventDefault();
 
@@ -31,10 +29,11 @@ const RegisterForm = ({ setError }) => {
     try {
       setLoading(true);
       await Auth.signUp({ username, password, attributes: { email } });
-      await post(membersUrl, { username, email });
+      await axios.post(membersUrl, { username, email });
       setRedirect(true);
     } catch (err) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };

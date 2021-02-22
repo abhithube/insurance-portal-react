@@ -3,5 +3,6 @@
 }
 
 #main-content {
+  padding: 24px;
   height: calc(100% - 64px);
 }

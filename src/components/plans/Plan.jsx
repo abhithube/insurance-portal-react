@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../../contexts/AuthContext';
-import useAxios from '../../hooks/useAxios';
+import axios from 'axios';
 import './Plan.css';
 
 const membersUrl = process.env.REACT_APP_MEMBERS_URL;
@@ -10,7 +10,6 @@ const membersUrl = process.env.REACT_APP_MEMBERS_URL;
 const Plan = ({ plan, setError }) => {
   const { currentUser, isAuthenticated } = useContext(AuthContext);
 
-  const { get } = useAxios();
   const history = useHistory();
 
   const handleClick = async (id) => {
@@ -19,7 +18,7 @@ const Plan = ({ plan, setError }) => {
       return;
     }
 
-    get(membersUrl + currentUser).then((res) => {
+    axios.get(membersUrl + currentUser).then((res) => {
       if (res.plan) setError('You are already enrolled in a plan');
       else history.push(`/payment?plan=${id}`);
     });

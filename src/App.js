@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 
 import ProtectedRoute from './components/util/ProtectedRoute';
+import Dashboard from './components/dashboard/Dashboard';
 import Navbar from './components/navbar/Navbar';
 import LoginPage from './components/login/LoginPage';
 import RegisterPage from './components/register/RegisterPage';
@@ -27,6 +28,7 @@ function App() {
           <Navbar />
           <div id='main-content'>
             <Switch>
+              <Route exact path='/' component={Dashboard} />
               <Route path='/login' component={LoginPage} />
               <Route path='/register' component={RegisterPage} />
               <Route path='/plans' component={PlansPage} />
